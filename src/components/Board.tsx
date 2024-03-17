@@ -25,8 +25,14 @@ function Board() {
 
   const { toast } = useToast();
 
-  const { socket, leaveRoom, isMultiplayer, roomId, setIsMultiplayer }: any =
-    useSocket();
+  const {
+    socket,
+    leaveRoom,
+    isMultiplayer,
+    roomId,
+    setIsMultiplayer,
+    myTurn,
+  }: any = useSocket();
 
   useEffect(() => {
     if (socket) {
@@ -39,38 +45,52 @@ function Board() {
         });
       });
 
-      socket.on("update-board", (newBoard: any) => {
-        setBoard(newBoard);
+      socket.on("update-board", (data: any) => {
+        setBoard(data.newBoard);
+        setIsXNext(!data.isXNext);
+        const { winner, line } = calculateWinner(data.newBoard);
+        setCount(data.count + 1);
+        checkMatchEnded(winner, line, count);
       });
     }
   }, [socket]);
 
   const handleSquareClick = (index: number) => {
-    if (!board[index] && !winner && !draw) {
+    let currentTurn = isXNext ? "X" : "O";
+    if (
+      !board[index] &&
+      !winner &&
+      !draw &&
+      (!isMultiplayer || currentTurn === myTurn)
+    ) {
       const newBoard = board.slice();
-      newBoard[index] = isXNext ? "X" : "O";
+      newBoard[index] = currentTurn;
       setBoard(newBoard);
       setIsXNext(!isXNext);
       setCount(count + 1);
       const { winner, line } = calculateWinner(newBoard);
 
       if (isMultiplayer) {
-        socket.emit("new-move", { roomId, newBoard });
+        socket.emit("new-move", { roomId, newBoard, isXNext, count });
       }
 
-      if (winner) {
-        setWinningLine(line);
-        setWinner(winner);
-        setShowAlert(true);
-        setType("winner");
-        increaseCount(winner);
-      }
-      if (!winner && count == 8) {
-        setDraw(true);
-        setShowAlert(true);
-        setType("draw");
-        increaseCount("D");
-      }
+      checkMatchEnded(winner, line, count);
+    }
+  };
+
+  const checkMatchEnded = (winner: any, line: any, count: number) => {
+    if (winner) {
+      setWinningLine(line);
+      setWinner(winner);
+      setShowAlert(true);
+      setType("winner");
+      increaseCount(winner);
+    }
+    if (!winner && count == 8) {
+      setDraw(true);
+      setShowAlert(true);
+      setType("draw");
+      increaseCount("D");
     }
   };
 
@@ -125,13 +145,18 @@ function Board() {
             </p>
           )}
         </div>
-        {winner ? (
+        {winner || draw ? (
           <MatchResult
             type={winner ? "winner" : draw && "draw"}
             winner={winner}
           />
         ) : (
-          <Indicator isXNext={isXNext} winningCount={winningCount} />
+          <Indicator
+            isXNext={isXNext}
+            myTurn={myTurn}
+            winningCount={winningCount}
+            isMultiplayer={isMultiplayer}
+          />
         )}
         <Tiles
           board={board}

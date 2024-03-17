@@ -16,6 +16,8 @@ export const SocketProvider = ({ children }: any) => {
   const [isMultiplayer, setIsMultiplayer] = useState<boolean>(false);
   const { toast } = useToast();
   const { name }: any = useContext(NameContext);
+  const [myTurn, setMyturn] = useState<string>("X");
+
   let socketInstance: any;
   const connectSocket = async () => {
     await fetch("api/socket");
@@ -53,6 +55,7 @@ export const SocketProvider = ({ children }: any) => {
   const createNewRoom = (roomid: string) => {
     socket.emit("createRoom", roomid, name);
     setRoomid(roomid);
+    setMyturn("X");
   };
 
   const leaveRoom = (roomid: string) => {
@@ -62,6 +65,7 @@ export const SocketProvider = ({ children }: any) => {
 
   const joinRoom = (roomid: string) => {
     socket.emit("joinRoom", roomid, name);
+    setMyturn("O");
   };
 
   return (
@@ -73,7 +77,8 @@ export const SocketProvider = ({ children }: any) => {
         leaveRoom,
         isMultiplayer,
         joinRoom,
-        setIsMultiplayer
+        setIsMultiplayer,
+        myTurn,
       }}
     >
       {children}

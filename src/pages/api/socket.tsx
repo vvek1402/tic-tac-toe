@@ -8,10 +8,6 @@ const SocketHandler = (req: any, res: any) => {
     io.on("connection", (socket) => {
       console.log(`Socket ${socket.id} connected.`);
 
-      socket.on("new-move", ({ roomId, newBoard }) => {
-        io.emit("update-board", newBoard);
-      });
-
       socket.on("createRoom", (roomId, userName) => {
         rooms[roomId] = { users: [{ id: socket.id, name: userName }] };
         io.emit("roomCreated", roomId);
@@ -40,6 +36,10 @@ const SocketHandler = (req: any, res: any) => {
         } else {
           socket.emit("roomFull");
         }
+      });
+
+      socket.on("new-move", ({ roomId, newBoard, isXNext, count }) => {
+        io.emit("update-board", { newBoard, isXNext, count });
       });
 
       socket.on("disconnect", () => {
