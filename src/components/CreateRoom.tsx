@@ -32,17 +32,20 @@ export function CreateRoom(props: any) {
   const handleNewRoom = () => {
     let randomId = generateRandomId(12);
     setRoomCreated(true);
-    createNewRoom(randomId)
+    createNewRoom(randomId);
   };
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(roomid);
+    toast({
+      title: "Roomid Copied..",
+    });
   };
 
   const handleJoinRoom = () => {
     if (joinroomid == "") return;
 
-    joinRoom(joinroomid)
+    joinRoom(joinroomid);
     props.setShowroom(false);
     toast({
       title: "Room Joined Successfully",

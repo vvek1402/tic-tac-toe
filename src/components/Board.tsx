@@ -137,7 +137,7 @@ function Board() {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen flex-col">
+      <div className="flex items-center justify-center flex-col mt-16">
         <div className="m-5 flex items-center flex-col">
           {isMultiplayer && (
             <p className="text-[20px]">
