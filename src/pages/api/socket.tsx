@@ -38,8 +38,16 @@ const SocketHandler = (req: any, res: any) => {
         }
       });
 
-      socket.on("new-move", ({ roomId, newBoard, isXNext, count }) => {
-        io.emit("update-board", { newBoard, isXNext, count });
+      socket.on("new-move", ({ roomId, newBoard, isXNext }) => {
+        io.emit("update-board", { newBoard, isXNext });
+      });
+
+      socket.on("reset-game", () => {
+        io.emit("reset-board");
+      });
+
+      socket.on("match-ended", (score) => {
+        io.emit("update-score", score);
       });
 
       socket.on("disconnect", () => {

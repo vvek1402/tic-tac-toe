@@ -15,7 +15,6 @@ function Board() {
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
   const [draw, setDraw] = useState(false);
-  const [count, setCount] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [type, setType] = useState("");
   const [winningLine, setWinningLine] = useState<number[]>([]);
@@ -49,11 +48,28 @@ function Board() {
         setBoard(data.newBoard);
         setIsXNext(!data.isXNext);
         const { winner, line } = calculateWinner(data.newBoard);
-        setCount(data.count + 1);
-        checkMatchEnded(winner, line, count);
+        checkMatchEnded(winner, line);
+      });
+
+      socket.on("reset-board", () => {
+        resetStates();
+      });
+
+      socket.on("update-score", (score: any) => {
+        setWinningCount(score);
       });
     }
   }, [socket]);
+
+  useEffect(() => {
+    const isBoardFilled = board.every((value) => value !== null);
+    if (!winner && isBoardFilled) {
+      setDraw(true);
+      setShowAlert(true);
+      setType("draw");
+      increaseCount("D");
+    }
+  }, [board]);
 
   const handleSquareClick = (index: number) => {
     let currentTurn = isXNext ? "X" : "O";
@@ -67,30 +83,23 @@ function Board() {
       newBoard[index] = currentTurn;
       setBoard(newBoard);
       setIsXNext(!isXNext);
-      setCount(count + 1);
       const { winner, line } = calculateWinner(newBoard);
 
       if (isMultiplayer) {
-        socket.emit("new-move", { roomId, newBoard, isXNext, count });
+        socket.emit("new-move", { roomId, newBoard, isXNext });
       }
 
-      checkMatchEnded(winner, line, count);
+      checkMatchEnded(winner, line);
     }
   };
 
-  const checkMatchEnded = (winner: any, line: any, count: number) => {
+  const checkMatchEnded = (winner: any, line: any) => {
     if (winner) {
       setWinningLine(line);
       setWinner(winner);
       setShowAlert(true);
       setType("winner");
       increaseCount(winner);
-    }
-    if (!winner && count == 8) {
-      setDraw(true);
-      setShowAlert(true);
-      setType("draw");
-      increaseCount("D");
     }
   };
 
@@ -121,17 +130,29 @@ function Board() {
   };
 
   const resetGame = () => {
+    if (isMultiplayer) {
+      socket.emit("reset-game");
+    } else {
+      resetStates();
+    }
+  };
+
+  const resetStates = () => {
     setBoard(Array(9).fill(null));
-    setCount(0);
     setWinner(null);
     setIsXNext(true);
     setWinningLine([]);
     setDraw(false);
+    setShowAlert(false);
   };
 
   const increaseCount = (player: string) => {
     setWinningCount((prevCount: any) => {
-      return { ...prevCount, [player]: prevCount[player] + 1 };
+      const newCount = { ...prevCount, [player]: prevCount[player] + 1 };
+      if (isMultiplayer) {
+        socket.emit("match-ended", newCount);
+      }
+      return newCount;
     });
   };
 
