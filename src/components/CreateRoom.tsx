@@ -11,12 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
+import { CreateRoomType, SocketContextType } from "@/types/type";
 
-export function CreateRoom(props: any) {
+export function CreateRoom({showRoom, setShowroom}: CreateRoomType) {
   const [roomcreated, setRoomCreated] = useState(false);
   const [joinroomid, setJoinRoomid] = useState("");
   const { toast } = useToast();
-  let { createNewRoom, roomid, joinRoom }: any = useSocket();
+  let { createNewRoom, roomid, joinRoom }: SocketContextType = useSocket();
 
   function generateRandomId(length: number) {
     let result = "";
@@ -32,11 +33,11 @@ export function CreateRoom(props: any) {
   const handleNewRoom = () => {
     let randomId = generateRandomId(12);
     setRoomCreated(true);
-    createNewRoom(randomId);
+    createNewRoom?.(randomId);
   };
 
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(roomid);
+    navigator.clipboard.writeText(roomid as string);
     toast({
       title: "Roomid Copied..",
     });
@@ -45,8 +46,8 @@ export function CreateRoom(props: any) {
   const handleJoinRoom = () => {
     if (joinroomid == "") return;
 
-    joinRoom(joinroomid);
-    props.setShowroom(false);
+    joinRoom?.(joinroomid);
+    setShowroom(false);
     toast({
       title: "Room Joined Successfully",
     });
@@ -54,10 +55,10 @@ export function CreateRoom(props: any) {
 
   useEffect(() => {
     setRoomCreated(false);
-  }, [props.showRoom])
+  }, [showRoom])
 
   return (
-    <Dialog open={props.showRoom} onOpenChange={props.setShowroom}>
+    <Dialog open={showRoom} onOpenChange={setShowroom}>
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle>Play With Friend</DialogTitle>

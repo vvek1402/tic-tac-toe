@@ -1,19 +1,25 @@
 import React from "react";
 
-export default function MatchResult(props: any) {
+export default function MatchResult({
+  type,
+  winner,
+}: {
+  type: string;
+  winner: string;
+}) {
   return (
     <div className="m-5 flex items-center flex-col">
-      {props.type && props.type == "winner" && (
+      {type && type == "winner" && (
         <>
           <img
             className="w-11"
             src="https://static-00.iconduck.com/assets.00/medal-gold-winner-2-icon-492x512-hicgyfg1.png"
           />
 
-          <p className="text-[30px] mt-4">{props.winner} is the Winner</p>
+          <p className="text-[30px] mt-4">{winner} is the Winner</p>
         </>
       )}
-      {props.type && props.type == "draw" && (
+      {type && type == "draw" && (
         <>
           <img
             className="w-11"

@@ -8,20 +8,27 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import MatchResult from "./MatchResult";
+import { MatchAlertType } from "@/types/type";
 
-export function MatchAlert(props: any) {
+export function MatchAlert({
+  showAlert,
+  setShowAlert,
+  type,
+  winner,
+  resetGame,
+}: MatchAlertType) {
   return (
-    <AlertDialog open={props.showAlert} onOpenChange={props.setShowAlert}>
+    <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
             {" "}
-            <MatchResult type={props.type} winner={props.winner} />
+            <MatchResult type={type} winner={winner} />
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => props.resetGame()}>
+          <AlertDialogAction onClick={() => resetGame()}>
             Reset
           </AlertDialogAction>
         </AlertDialogFooter>

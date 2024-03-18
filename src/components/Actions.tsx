@@ -1,12 +1,13 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { ActionProps } from "@/types/type";
 
 export default function Actions({
   isMultiplayer,
   setShowroom,
   leaveRoom,
   resetGame,
-}: any) {
+}: ActionProps) {
   return (
     <div className="flex">
       {!isMultiplayer ? (
@@ -14,7 +15,7 @@ export default function Actions({
           Play With Friend
         </Button>
       ) : (
-        <Button onClick={() => leaveRoom()} className="ml-2">
+        <Button onClick={() => leaveRoom?.()} className="ml-2">
           Leave Room
         </Button>
       )}

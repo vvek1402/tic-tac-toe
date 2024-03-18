@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator";
+import { IndicatorProps } from "@/types/type";
 import React from "react";
 
 export default function Indicator({
@@ -6,7 +7,7 @@ export default function Indicator({
   myTurn,
   winningCount,
   isMultiplayer,
-}: any) {
+}: IndicatorProps) {
   let symbol = isXNext ? "X" : "O";
   return (
     <div className="bg-white p-4 rounded-lg text-center mb-5 dark:bg-black">

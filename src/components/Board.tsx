@@ -9,53 +9,57 @@ import { useSocket } from "@/context/SocketContext";
 import Actions from "./Actions";
 import Fireworks from "./Fireworks";
 import Indicator from "./Indicator";
+import { Score, SocketContextType } from "@/types/type";
 
 function Board() {
   const [board, setBoard] = useState(Array(9).fill(null));
-  const [isXNext, setIsXNext] = useState(true);
-  const [winner, setWinner] = useState(null);
-  const [draw, setDraw] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [type, setType] = useState("");
+  const [isXNext, setIsXNext] = useState<boolean>(true);
+  const [winner, setWinner] = useState<string>("");
+  const [draw, setDraw] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
   const [winningLine, setWinningLine] = useState<number[]>([]);
   const [showRoom, setShowroom] = useState<boolean>(false);
   const [opponent, setOpponent] = useState<string>("");
-  const [winningCount, setWinningCount] = useState<any>({ X: 0, O: 0, D: 0 });
+  const [winningCount, setWinningCount] = useState<Score>({ X: 0, O: 0, D: 0 });
 
   const { toast } = useToast();
 
   const {
     socket,
+    roomid,
     leaveRoom,
     isMultiplayer,
-    roomid,
     setIsMultiplayer,
     myTurn,
-  }: any = useSocket();
+  }: SocketContextType = useSocket();
 
   useEffect(() => {
     if (socket) {
       socket.on("userJoined", (opponentname: string) => {
         setShowroom(false);
         setOpponent(opponentname);
-        setIsMultiplayer(true);
+        setIsMultiplayer?.(true);
         toast({
           title: "New User Joined",
         });
       });
 
-      socket.on("update-board", (data: any) => {
-        setBoard(data.newBoard);
-        setIsXNext(!data.isXNext);
-        const { winner, line } = calculateWinner(data.newBoard);
-        checkMatchEnded(winner, line);
-      });
+      socket.on(
+        "update-board",
+        (data: { newBoard: string[]; isXNext: boolean }) => {
+          setBoard(data.newBoard);
+          setIsXNext(!data.isXNext);
+          const { winner, line } = calculateWinner(data.newBoard);
+          checkMatchEnded(winner, line);
+        }
+      );
 
       socket.on("reset-board", () => {
         resetStates();
       });
 
-      socket.on("update-score", (score: any) => {
+      socket.on("update-score", (score: Score) => {
         setWinningCount(score);
       });
     }
@@ -83,7 +87,8 @@ function Board() {
       newBoard[index] = currentTurn;
       setBoard(newBoard);
       setIsXNext(!isXNext);
-      const { winner, line } = calculateWinner(newBoard);
+      const { winner, line }: { winner: string; line: number[] } =
+        calculateWinner(newBoard);
 
       if (isMultiplayer) {
         socket.emit("new-move", { roomid, newBoard, isXNext });
@@ -93,7 +98,7 @@ function Board() {
     }
   };
 
-  const checkMatchEnded = (winner: any, line: any) => {
+  const checkMatchEnded = (winner: string, line: number[]) => {
     if (winner) {
       setWinningLine(line);
       setWinner(winner);
@@ -103,7 +108,7 @@ function Board() {
     }
   };
 
-  const calculateWinner = (squares: any) => {
+  const calculateWinner = (squares: string[]) => {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -126,7 +131,7 @@ function Board() {
       }
     }
 
-    return { winner: null, line: [] };
+    return { winner: "", line: [] };
   };
 
   const resetGame = () => {
@@ -139,7 +144,7 @@ function Board() {
 
   const resetStates = () => {
     setBoard(Array(9).fill(null));
-    setWinner(null);
+    setWinner("");
     setIsXNext(true);
     setWinningLine([]);
     setDraw(false);
@@ -168,7 +173,7 @@ function Board() {
         </div>
         {winner || draw ? (
           <MatchResult
-            type={winner ? "winner" : draw && "draw"}
+            type={winner ? "winner" : (draw ? "draw" : "")}
             winner={winner}
           />
         ) : (

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-export default function Fireworks({ winner }: any) {
+export default function Fireworks({ winner }: { winner: string }) {
   return (
     <div>
       {winner && (

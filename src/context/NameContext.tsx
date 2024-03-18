@@ -1,12 +1,6 @@
 "use client";
+import { NameContextType } from "@/types/type";
 import React, { createContext, useState, useEffect, useContext } from "react";
-
-interface NameContextType {
-  name: string;
-  updateName: (newName: string) => void;
-  setRename: any;
-  rename: boolean;
-}
 
 export const NameContext = createContext<NameContextType | undefined>(
   undefined

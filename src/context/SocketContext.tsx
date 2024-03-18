@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { NameContext } from "./NameContext";
+import { NameContextType } from "@/types/type";
 
 const SocketContext = createContext({});
 
@@ -10,12 +11,12 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-export const SocketProvider = ({ children }: any) => {
+export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [socket, setSocket] = useState<any>(null);
   const [roomid, setRoomid] = useState("");
   const [isMultiplayer, setIsMultiplayer] = useState<boolean>(false);
   const { toast } = useToast();
-  const { name }: any = useContext(NameContext);
+  const { name } : NameContextType = useContext(NameContext) ?? {};
   const [myTurn, setMyturn] = useState<string>("X");
 
   let socketInstance: any;

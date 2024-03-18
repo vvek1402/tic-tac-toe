@@ -13,37 +13,34 @@ import { Label } from "@/components/ui/label";
 import { NameContext } from "@/context/NameContext";
 import { useContext, useEffect, useState } from "react";
 import { useToast } from "./ui/use-toast";
+import { NameContextType } from "@/types/type";
 
 export function NicknameDialog() {
   const [open, setOpen] = useState(false);
   const [nickname, setNickname] = useState("");
   const { toast } = useToast();
 
-  const context: any = useContext(NameContext);
+  const { name, rename, updateName }: NameContextType = useContext(NameContext) ?? {};
   useEffect(() => {
-    const name = context.name;
-
     if (name == undefined || name == "") {
       setOpen(true);
     } else {
       setNickname(name);
       setOpen(false);
     }
-  }, [context.name]);
+  }, [name]);
 
   useEffect(() => {
-    const rename = context.rename;
-
     if (!rename) {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [context.rename]);
+  }, [rename]);
 
   const saveNickname = () => {
     if (nickname == "") return;
-    context.updateName(nickname);
+    updateName?.(nickname);
     setOpen(false);
   };
 
@@ -59,8 +56,6 @@ export function NicknameDialog() {
       setOpen(false);
       return true;
     }
-    
-
   };
 
   return (

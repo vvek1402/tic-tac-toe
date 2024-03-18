@@ -13,23 +13,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NameContext } from "@/context/NameContext";
+import { NameContextType } from "@/types/type";
 export function Navbar() {
   const { setTheme } = useTheme();
   const [nickname, setNickname] = useState("");
-  const context: any = useContext(NameContext);
+  const { name, rename, setRename }: NameContextType = useContext(NameContext) ?? {};
 
   useEffect(() => {
-    const name = context.name;
-
     if (name != undefined && name != null) {
       setNickname(name);
     } else {
       setNickname("User");
     }
-  }, [context.name]);
+  }, [name]);
 
   const updateName = () => {
-    context.setRename(!context.rename);
+    setRename?.(!rename);
   };
 
   return (

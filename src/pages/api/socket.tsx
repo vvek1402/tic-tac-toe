@@ -1,10 +1,14 @@
+import { Rooms, User } from "@/types/type";
+import { NextApiRequest, NextApiResponse } from "next";
 import { Server } from "socket.io";
 
-const SocketHandler = (req: any, res: any) => {
+
+
+const SocketHandler = (req: NextApiRequest, res: any) => {
   if (!res.socket.server.io) {
     console.log("*First use, starting Socket.IO");
     const io = new Server(res.socket.server);
-    const rooms: any = {};
+    const rooms: Rooms = {};
     io.on("connection", (socket) => {
       console.log(`Socket ${socket.id} connected.`);
 
@@ -17,7 +21,7 @@ const SocketHandler = (req: any, res: any) => {
       socket.on("leaveRoom", (roomId) => {
         if (rooms[roomId]) {
           rooms[roomId].users = rooms[roomId].users.filter(
-            (user: any) => user.id !== socket.id
+            (user: User) => user.id !== socket.id
           );
           if (rooms[roomId].users.length === 0) {
             delete rooms[roomId];
@@ -55,7 +59,7 @@ const SocketHandler = (req: any, res: any) => {
       socket.on("disconnect", () => {
         Object.keys(rooms).forEach((roomId) => {
           rooms[roomId].users = rooms[roomId].users.filter(
-            (user: any) => user.id !== socket.id
+            (user: User) => user.id !== socket.id
           );
         });
       });
