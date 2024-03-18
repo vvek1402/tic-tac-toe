@@ -11,6 +11,7 @@ const SocketHandler = (req: any, res: any) => {
       socket.on("createRoom", (roomId, userName) => {
         rooms[roomId] = { users: [{ id: socket.id, name: userName }] };
         io.emit("roomCreated", roomId);
+        socket.join(roomId);
       });
 
       socket.on("leaveRoom", (roomId) => {
@@ -33,21 +34,23 @@ const SocketHandler = (req: any, res: any) => {
             io.to(user2.id).emit("userJoined", user1.name);
             io.to(user1.id).emit("userJoined", user2.name);
           }
+          socket.join(roomId);
         } else {
           socket.emit("roomFull");
         }
       });
 
-      socket.on("new-move", ({ roomId, newBoard, isXNext }) => {
-        io.emit("update-board", { newBoard, isXNext });
+      socket.on("new-move", (data) => {
+        io.to(data.roomid).emit("update-board", { newBoard : data.newBoard, isXNext: data.isXNext });
       });
 
-      socket.on("reset-game", () => {
-        io.emit("reset-board");
+      socket.on("reset-game", (roomid) => {
+        io.to(roomid).emit("reset-board");
       });
 
-      socket.on("match-ended", (score) => {
-        io.emit("update-score", score);
+      socket.on("change-score", (data) => {
+        console.log(data);
+        io.to(data.roomid).emit("update-score", data.newCount);
       });
 
       socket.on("disconnect", () => {

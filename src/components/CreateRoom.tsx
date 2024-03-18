@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 
@@ -51,6 +51,10 @@ export function CreateRoom(props: any) {
       title: "Room Joined Successfully",
     });
   };
+
+  useEffect(() => {
+    setRoomCreated(false);
+  }, [props.showRoom])
 
   return (
     <Dialog open={props.showRoom} onOpenChange={props.setShowroom}>

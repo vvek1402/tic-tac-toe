@@ -28,7 +28,7 @@ function Board() {
     socket,
     leaveRoom,
     isMultiplayer,
-    roomId,
+    roomid,
     setIsMultiplayer,
     myTurn,
   }: any = useSocket();
@@ -86,7 +86,7 @@ function Board() {
       const { winner, line } = calculateWinner(newBoard);
 
       if (isMultiplayer) {
-        socket.emit("new-move", { roomId, newBoard, isXNext });
+        socket.emit("new-move", { roomid, newBoard, isXNext });
       }
 
       checkMatchEnded(winner, line);
@@ -131,7 +131,7 @@ function Board() {
 
   const resetGame = () => {
     if (isMultiplayer) {
-      socket.emit("reset-game");
+      socket.emit("reset-game", roomid);
     } else {
       resetStates();
     }
@@ -150,7 +150,7 @@ function Board() {
     setWinningCount((prevCount: any) => {
       const newCount = { ...prevCount, [player]: prevCount[player] + 1 };
       if (isMultiplayer) {
-        socket.emit("match-ended", newCount);
+        socket.emit("change-score", { roomid, newCount });
       }
       return newCount;
     });

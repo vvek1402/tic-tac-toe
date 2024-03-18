@@ -65,6 +65,7 @@ export const SocketProvider = ({ children }: any) => {
 
   const joinRoom = (roomid: string) => {
     socket.emit("joinRoom", roomid, name);
+    setRoomid(roomid);
     setMyturn("O");
   };
 
