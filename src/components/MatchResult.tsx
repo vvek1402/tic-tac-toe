@@ -13,7 +13,7 @@ export default function MatchResult({
         <>
           <img
             className="w-11"
-            src="https://static-00.iconduck.com/assets.00/medal-gold-winner-2-icon-492x512-hicgyfg1.png"
+            src="medal-gold.png"
           />
 
           <p className="text-[30px] mt-4">{winner} is the Winner</p>
@@ -23,7 +23,7 @@ export default function MatchResult({
         <>
           <img
             className="w-11"
-            src="https://cdn1.iconfinder.com/data/icons/chess-bzzricon-color-omission/512/20_Draw-512.png"
+            src="draw.png"
           />
           <p className="text-[30px] mt-4">Match is Draw </p>
         </>

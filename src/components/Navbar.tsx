@@ -39,8 +39,8 @@ export function Navbar() {
       >
         <p className="text-center">Welcome, {nickname}</p>
         <Avatar className="m-2 cursor-pointer">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src="user.jpeg" alt="@shadcn" />
+          <AvatarFallback>IO</AvatarFallback>
         </Avatar>
       </button>
 
