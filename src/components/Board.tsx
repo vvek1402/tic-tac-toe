@@ -62,6 +62,14 @@ function Board() {
       socket.on("update-score", (score: Score) => {
         setWinningCount(score);
       });
+
+      socket.on("userLeaved", () => {
+        leaveRoom?.();
+        toast({
+          variant: "destructive",
+          title: "User Leaved",
+        });
+      });
     }
   }, [socket]);
 
@@ -173,7 +181,7 @@ function Board() {
         </div>
         {winner || draw ? (
           <MatchResult
-            type={winner ? "winner" : (draw ? "draw" : "")}
+            type={winner ? "winner" : draw ? "draw" : ""}
             winner={winner}
           />
         ) : (

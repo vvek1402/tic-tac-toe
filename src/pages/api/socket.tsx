@@ -26,6 +26,7 @@ const SocketHandler = (req: NextApiRequest, res: any) => {
           if (rooms[roomId].users.length === 0) {
             delete rooms[roomId];
           }
+          io.emit("userLeaved");
           socket.leave(roomId);
         }
       });

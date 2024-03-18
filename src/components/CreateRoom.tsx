@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { CreateRoomType, SocketContextType } from "@/types/type";
 
-export function CreateRoom({showRoom, setShowroom}: CreateRoomType) {
+export function CreateRoom({ showRoom, setShowroom }: CreateRoomType) {
   const [roomcreated, setRoomCreated] = useState(false);
   const [joinroomid, setJoinRoomid] = useState("");
   const { toast } = useToast();
@@ -55,7 +55,7 @@ export function CreateRoom({showRoom, setShowroom}: CreateRoomType) {
 
   useEffect(() => {
     setRoomCreated(false);
-  }, [showRoom])
+  }, [showRoom]);
 
   return (
     <Dialog open={showRoom} onOpenChange={setShowroom}>
