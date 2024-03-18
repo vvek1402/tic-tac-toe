@@ -36,7 +36,7 @@ export const SocketProvider = ({ children }: any) => {
     socketInstance.on("roomFull", () => {
       toast({
         variant: "destructive",
-        title: "Room is full",
+        title: "Room doesnt Exist",
         description: "Uh oh! Something went wrong.",
       });
     });
@@ -58,7 +58,7 @@ export const SocketProvider = ({ children }: any) => {
     setMyturn("X");
   };
 
-  const leaveRoom = (roomid: string) => {
+  const leaveRoom = () => {
     socket.emit("leaveRoom", roomid);
     setIsMultiplayer(false);
   };

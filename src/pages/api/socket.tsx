@@ -49,7 +49,6 @@ const SocketHandler = (req: any, res: any) => {
       });
 
       socket.on("change-score", (data) => {
-        console.log(data);
         io.to(data.roomid).emit("update-score", data.newCount);
       });
 
