@@ -64,7 +64,7 @@ export function NicknameDialog() {
         <DialogHeader>
           <DialogTitle>Nickname</DialogTitle>
           <DialogDescription>
-            Set Your nickname. Click save when you're done.
+            Set Your nickname.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
