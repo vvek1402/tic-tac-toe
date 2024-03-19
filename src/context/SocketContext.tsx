@@ -37,8 +37,8 @@ export const SocketProvider = ({ children }: React.PropsWithChildren<{}>) => {
     socketInstance.on("roomFull", () => {
       toast({
         variant: "destructive",
-        title: "Room doesnt Exist",
-        description: "Uh oh! Something went wrong.",
+        title: "Room is Full or doesnt Exist",
+        description: "Please try again later.",
       });
     });
   };
